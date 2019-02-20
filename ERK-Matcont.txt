@@ -1,0 +1,108 @@
+Detailed General Instructions to generate oscillations in Matcont when a Hopf bifurcation is already known:
+Preprocessing Step
+1. Determine ODE system for the chemical reaction network.
+2. Determine the conservation laws.
+3. Solve each of the conservation laws for the one of the variables. (ex: x1+x2+x3=c1 => x1 = c1-x2-x3) making sure to only solve in terms of each variable at most once. (ex: if also have x1 + x5 + x6 = c2, cannot also solve this for x1). 
+4. Substitute the expressions computed in the above step for the appropriate variables in the ODE system determined in Step 1.
+5. Subsitute the parameter values, save for the total concentrations ci, into the ODE system.
+Input to Matcont
+6. Open Matcont, by opening Matlab, navigating to the appropriate folder, and then typing matcont and enter. A number of windows will open up. 
+7. In the window titled MatCont, click Select -> System -> New. Input the System (as specified in the System subsections below). Note that we only input the ODEs for the remaining xi (the ones not replaced by the conservation law) into Matcont. Click OK to save the system.
+8. In the window titled MatCont, click Type -> Initial Point -> Point. A window called Starter will pop up.
+9. In the Starter window, type in the initial species concentrations and the total concentrations as specified in the "Starter" subsection below. Note: Do not click Select Cycle when you are done!
+10. To compute the solution curves, I use the non-stiff ODE solver*: ode15s, with inputs as detailed below.
+Generate Oscillation Diagrams
+11. To see the solution curves, in the MatCont window, click Window -> Graphic -> 2Dplot. In the 2Dplot window, click Layout -> Variables on axes, and choose the Abscissa to be t Time and the Ordinate to be the Coordinates (the xi).
+
+*Since solutions were not computing 'quickly' with the default solver ode45, I use the non-stiff ODE solver, ode15s, with inputs as follows.
+
+Integrator
+----------
+Method: ode15s
+Interval: 100
+InitStepSize: <automatic>
+MaxStepSize: <automatic>
+Rel. Tolerance: 1e-3
+Abs. Tolerance: 1e-6
+Refine: 1
+Normcontrol: No
+BDF: Off
+MaxOrder: 5
+
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Irreversible ERK Network inputs for oscillations - see Figure 3 in the manuscript for the oscillations.
+~~~~~~~~~~~~~~~~~~~~~~~~~
+System
+-------------------
+Name: irrerk22
+Coordinates: x1,x2,x3,x4,x5,x6,x10,x11,x12
+Parameters: e,f,s,k2,kon,m1,l2,lon,n2
+Time: t
+
+x1'=5241*x11*(e-x1-x2-x3)-k2*x1-5314.5*x1                                          
+x2'=kon*(e-x1-x2-x3)*(s-x1-x2-x3-x4-x5-x6-x10-x11-x12)+5314.5*x1-1367.203*x2       
+x3'=2.762500000*10^6*x10*(e-x1-x2-x3)-m1*x3-2.0451*x3                              
+x4'=64.271*x12*(f-x4-x5-x6)-l2*x4-44.965*x4                                        
+x5'=lon*x10*(f-x4-x5-x6)+44.965*x4-952208.0000*x5                                  
+x6'=2.149600000*10^6*(f-x4-x5-x6)*(s-x1-x2-x3-x4-x5-x6-x10-x11-x12)-n2*x6-1.3334*x6
+x10'=-lon*x10*(f-x4-x5-x6)-2.762500000*10^6*x10*(e-x1-x2-x3)+27238*x5+m1*x3        
+x11'=-5241*x11*(e-x1-x2-x3)+k2*x1+924970.0000*x5+1.3334*x6                         
+x12'=-64.271*x12*(f-x4-x5-x6)+1291*x2+l2*x4+2.0451*x3                              
+                                                                                   
+Starter
+-------------------
+t = 0
+x1 = 1.2147*10^{-5}
+x2 = 4.7218*10^{-5}
+x3 = 0.000877746
+x4 = 0.001395615
+x5 = 6.5903469e-8
+x6 = 0.002698493
+x10 = 2.2618474e-6
+x11 = 0.042875639
+x12 = 0.84901863  
+e = 0.0012244 
+f = 0.0052442 
+s = 0.9 
+k2 = 0
+kon = 0
+m1 = 0
+l2 = 0
+lon = 0
+n2 = 0
+
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Reduced ERK Network inputs for oscillations - see Figure 4 in the manuscript for the oscillations.
+~~~~~~~~~~~~~~~~~~~~~~~~~
+System
+-------------------
+Name: rederkspecnewhopf
+Coordinates: x1,x2,x3,x5,x7,x8,x10
+Parameters: s,e,f
+Time: t
+[1st ord, 2nd ord, and 3rd ord derivatives to symbolically, leave 4th ord & 5th ord numerically]
+
+x1'=-5.562*10^6*x1*x2+(80675.7718*(s-x1-e+x2-x5-x7-f+x8))*x8+729*x10
+x2'=-5.562*10^6*x1*x2+730*e-730*x2-730*x3                           
+x3'=5.562*10^6*x1*x2-730*x3                                         
+x5'=-3.879*10^8*x5*x8+453.594*x2*x7+729*e-729*x2-729*x3             
+x7'=-453.594*x2*x7+x10                                              
+x8'=-3.879*10^8*x5*x8+730*x10                                       
+x10'=730*f-730*x8-1460*x10                                          
+                                                                    
+
+Starter
+-------------------
+t = 0
+x1 = 1.315910
+x2 = 0.1624e-01
+x3 = 1
+x5 = 0.14621
+x7 = 1
+x8 = 0.048737
+x10 = 1
+s = 6.21133
+e = 2.002246
+f = 2.000012
+
+
