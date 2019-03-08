@@ -1,2 +1,2 @@
 # ERK
-Supplementary files for "Bistability and Hopf bifurcations in a model of ERK regulation" (OSTT 2019)
+Supplementary files for "Oscillations and bistability in a model of ERK regulation" (OSTT 2019; arXiv 1903.02617)
